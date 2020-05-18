@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+    vpn-jumphost:
+        privileged: true
+        ports:
+            - 'vpnport:22'
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun
+        volumes:
+            - 'dockerdir/config:/vpn/config'
+            - 'dockerdir/log:/log'
+        container_name: vpn.vpnid
+        image: 'gederico/vpn.vpnid:v1.0.0'
