@@ -20,8 +20,14 @@ selectedvpn = keys[choice -1]
 if len(args) > 1:
     if args[1] == "down":
         compose = "docker-compose -f {}/compose/vpn.{}.yml -p vpn.{} down".format(workdir,selectedvpn,selectedvpn)
-        os.remove("config/config.{}".format(selectedvpn))
-        os.remove("config/pass.{}.txt".format(selectedvpn))
+        try:
+            os.remove("config/config.{}".format(selectedvpn))
+        except:
+            pass
+        try:
+            os.remove("config/pass.{}.txt".format(selectedvpn))
+        except:
+            pass
         exit()
 
 newfile = "#!/usr/bin/env bash \n"
