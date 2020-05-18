@@ -3,7 +3,7 @@ clone this git, create the servers.json file from servers.json.example with your
 install docker and docker-compose
 create an sshkey for connecting to the docker jumphost
 run ./setup.py 
-***** passwords are stored as plain text, use it at your own risk **
+**passwords are stored as plain text, use it at your own risk**
 finally use vpn and vpn down commands to build and remove the containers
 
 to use the container as jumphost just do:
