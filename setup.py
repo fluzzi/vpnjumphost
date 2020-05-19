@@ -34,10 +34,10 @@ for i in paths:
         bindir = i
 if bindir == None:
     if os.geteuid()==0:
-        bindir = "/usr/local/bin"
+        bindir = "/usr/bin"
     else:
         bindir = home + "/bin"
-    print(f"{bcolors.WARNING}Warning: add {bindir} to PATH env{bcolors.ENDC}")
+        print(f"{bcolors.WARNING}Warning: add {bindir} to PATH env{bcolors.ENDC}")
 scriptfile = bindir + "/vpn"
 
 if not os.path.exists(homekey):
