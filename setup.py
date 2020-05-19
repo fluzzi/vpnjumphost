@@ -33,11 +33,11 @@ for i in paths:
     if pathpattern1.match(i) or pathpattern2.match(i):
         bindir = i
 if bindir == None:
-    print(f"{bcolors.WARNING}Warning: add {home}/bin to PATH env{bcolors.ENDC}")
     if os.geteuid()==0:
         bindir = "/usr/local/bin"
     else:
         bindir = home + "/bin"
+    print(f"{bcolors.WARNING}Warning: add {bindir} to PATH env{bcolors.ENDC}")
 scriptfile = bindir + "/vpn"
 
 if not os.path.exists(homekey):
