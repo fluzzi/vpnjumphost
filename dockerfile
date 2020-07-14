@@ -6,7 +6,8 @@ RUN apk --update add --no-cache \
   curl \
   openvpn \
   supervisor \
-  openssh
+  openssh \
+  busybox-extras
 
 
 RUN apk --update --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/edge/testing/ add       bash       openconnect && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
