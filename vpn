@@ -10,13 +10,36 @@ bindir = None
 js = open(workdir + '/servers.json')
 servers = json.loads(js.read())
 keys = list(servers.keys())
+ranges = list(range(1,len(servers.keys())+1))
+try:
+    if args[1] == "down":
+        argument = args[2]
+    else:
+        argument = args[1]
+except:
+    pass
+try:
+    position = int(argument)
+except:
+    position = 0
 
-for i in range(0,len(servers.keys())):
-    num = i + 1
-    print('Enter ' + str(num) + ' for ' + keys[i] )
+for i in ranges:
+    print('Enter ' + str(i) + ' for ' + keys[i-1] )
+try:
+    if argument in keys:
+        print('Selected vpn ' + str(keys.index(argument)+1) + ': ' + argument)
+        selectedvpn = argument
+    elif position in ranges:
+        print('Selected vpn ' + argument + ': ' + keys[int(argument)-1])
+        selectedvpn = keys[int(argument)-1]
+    else:
+        choice = int(input("Enter your choice:"))
+        selectedvpn = keys[choice -1]
+except Exception as e:
+    #print(e)
+    choice = int(input("Enter your choice:"))
+    selectedvpn = keys[choice -1]
 
-choice = int(input("Enter your choice:"))
-selectedvpn = keys[choice -1]
 
 if len(args) > 1:
     if args[1] == "down":
