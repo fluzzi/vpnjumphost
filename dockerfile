@@ -2,9 +2,10 @@ FROM alpine:edge
 
 COPY rootfs /
 
-RUN apk --update add --no-cache \
+RUN apk --update add --no-cache --upgrade \
   curl \
   openvpn \
+  py3-setuptools \
   supervisor \
   openssh \
   busybox-extras
