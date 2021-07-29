@@ -1,5 +1,25 @@
-#!/bin/ash
-# generate host keys if not present
-ssh-keygen -A
-# do not detach (-D), log to stderr (-e), passthrough other arguments
-exec /usr/sbin/sshd -D -e "$@"
+#!/bin/bash
+source /vpn/config/config.vpnid
+
+start(){
+    #start programs in order
+    supervisorctl start vpn
+    (( $ssh )) && supervisorctl start sshd
+    (( $proxy )) && supervisorctl start squid
+    (( $dns  )) && supervisorctl start unbound
+    /onboot.sh
+}
+
+end() {
+    /ondown.sh
+    trap - HUP INT QUIT TERM
+    kill -- -$$ # Sends SIGTERM to child/sub processes
+}
+
+trap end HUP INT QUIT TERM
+
+echo "starting entrypoint"
+start
+
+echo "waiting for kill signal"
+read

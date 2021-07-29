@@ -4,13 +4,17 @@
         "pass": 1,   **remove this, this is the number of passwords requested by the vpn, like password and 2 factor authentication**
         "user": "user",
         "options": "options to pass to openconnect (example: --authgroup=1)",
-        "port": 2322 **remove this, port to forward the ssh traffic to for this container, do not repeat on other containers**
+        "sshport": 2322, **remove this, port to forward the ssh traffic to for this container, do not repeat on other containers, 0 to disable ssh**
+        "proxyport": 2323, **remove this, port of squid proxy, do not repeat on other containers, 0 to disable squid**
+        "dnsport": 2324 **remove this, port of squid proxy, do not repeat on other containers, 0 to disable squid**
     },
     "example2": {
         "host": "vpn.example2.com",
         "pass": 2,
         "user": "otheruser",
         "options": "",
-        "port": 2422
+        "sshport": 2422,
+        "proxyport": 2423,
+        "dnsport": 2424
     }
 }

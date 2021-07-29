@@ -3,7 +3,9 @@ services:
     vpn-jumphost:
         privileged: true
         ports:
-            - 'vpnport:22'
+            - 'sshport:22'
+            - 'proxyport:3128'
+            - 'dnsport:53/udp'
         cap_add:
             - NET_ADMIN
         devices:
@@ -11,5 +13,12 @@ services:
         volumes:
             - 'dockerdir/config:/vpn/config'
             - 'dockerdir/log:/log'
+            - 'dockerdir/shared:/shared'
         container_name: vpn.vpnid
+        hostname: vpnid
         image: 'gederico/vpn.vpnid:v1.0.0'
+        networks:
+            - vpnjumphost
+networks:
+    vpnjumphost:
+        external: true  

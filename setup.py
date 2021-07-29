@@ -19,10 +19,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 workdir = os.path.dirname(os.path.realpath(__file__))
-js = open('servers.json')
-servers = json.loads(js.read())
+js = open('config.json')
+config = json.loads(js.read())
+subnet = config["config"]["subnet"]
+servers = config["servers"]
 keys = list(servers.keys())
-allfiles = ["supervisord.conf","rootfs/vpn.sh"]
+allfiles = ["conf/supervisord.conf","rootfs/vpn.sh","rootfs/entrypoint.sh"]
 home = os.path.expanduser("~")
 homekey = home + "/.ssh/id_rsa.pub"
 paths = os.environ['PATH'].split(os.pathsep)
@@ -70,15 +72,38 @@ def make_files(vpnid):
             for line in file:
                 newline = line.replace("vpnid",vpnid)
                 newline = newline.replace("dockerdir",workdir)
-                print(newline.replace("vpnport",str(servers[vpnid]["port"])), end='')
+                newline = newline.replace("proxyport",str(servers[vpnid]["proxyport"]))
+                newline = newline.replace("dnsport",str(servers[vpnid]["dnsport"]))
+                print(newline.replace("sshport",str(servers[vpnid]["sshport"])), end='')
+    onbootkeys = servers[vpnid]["onboot"].keys()
+    ob = open("rootfs/onboot.sh",'w')
+    onbootlines = "#!/bin/sh"
+    for obscript in onbootkeys:
+        onbootlines = onbootlines + "\n" + servers[vpnid]["onboot"][obscript]
+    ob.writelines(onbootlines)
+    ob.close()
+    ondownkeys = servers[vpnid]["ondown"].keys()
+    od = open("rootfs/ondown.sh",'w')
+    ondownlines = "#!/bin/sh"
+    for odscript in ondownkeys:
+        ondownlines = ondownlines + "\n" + servers[vpnid]["ondown"][odscript]
+    od.writelines(ondownlines)
+    od.close()
 
 
 def return_files(vpnid):
     for f in allfiles:
         with fileinput.FileInput(f, inplace=True) as file:
             for line in file:
-                newline = line.replace(vpnid,"vpnid")
-                print(newline.replace(str(servers[vpnid]["port"]),"vpnport"), end='')
+                newline = line
+                print(newline.replace(vpnid,"vpnid"), end='')
+    firstline = "#!/bin/sh"
+    ob = open("rootfs/onboot.sh",'w')
+    ob.writelines(firstline)
+    ob.close()
+    od = open("rootfs/ondown.sh",'w')
+    od.writelines(firstline)
+    od.close()
 
 for i in keys:
    print("making files for " + i) 
@@ -88,3 +113,7 @@ for i in keys:
    print("restoring files") 
    return_files(i)
 os.remove("authorized_keys")
+
+print ("Creating network")
+network = "docker network inspect vpnjumphost >/dev/null 2>&1 || docker network create --subnet={} --driver bridge vpnjumphost".format(subnet)
+start = subprocess.call(network,shell=True)

@@ -4,11 +4,13 @@ import getpass
 import subprocess
 import json
 import os
+
 args = sys.argv
 workdir = None
 bindir = None
-js = open(workdir + '/servers.json')
-servers = json.loads(js.read())
+js = open(workdir + '/config.json')
+config = json.loads(js.read())
+servers = config["servers"]
 keys = list(servers.keys())
 ranges = list(range(1,len(servers.keys())+1))
 try:
@@ -58,7 +60,10 @@ if len(args) > 1:
 newfile = "#!/usr/bin/env bash \n"
 newfile = newfile + "server='" + servers[selectedvpn]["host"] + "'\n"
 newfile = newfile + "options='" + servers[selectedvpn]["options"] + "'\n"
-newfile = newfile + "user='" + servers[selectedvpn]["user"] + "'"
+newfile = newfile + "user='" + servers[selectedvpn]["user"] + "'\n"
+newfile = newfile + "ssh=" + str(servers[selectedvpn]["sshport"]) + "\n"
+newfile = newfile + "proxy=" + str(servers[selectedvpn]["proxyport"]) + "\n"
+newfile = newfile + "dns=" + str(servers[selectedvpn]["dnsport"])
 configfile = "{}/config/config.{}".format(workdir,selectedvpn)
 passfile = "{}/config/pass.{}.txt".format(workdir,selectedvpn)
 try:
