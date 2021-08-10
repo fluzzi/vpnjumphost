@@ -1,27 +1,28 @@
 ---
 config:
-  #subnet for the containers
+  # subnet for the containers. If you change it after running setup, first remove it with:
+  # sudo docker network rm vpnjumphost
   subnet: 192.168.155.0/24
 servers:
   example1:
     host: vpn.example1.com
-    #Number of passwords requested by the vpn, example: password and 2factorauth
+    # Number of passwords requested by the vpn, example: password and 2factorauth
     pass: 1
     user: username
-    #options to pass to openconnect (example: --authgroup=1)
+    # Options to pass to openconnect (example: --authgroup=1)
     options: ''
-    #port to forward the ssh traffic, do not repeat, 0 to disable ssh
+    # Port to forward the ssh traffic, do not repeat, 0 to disable ssh
     sshport: 44424
-    #port to of squid proxy, do not repeat, 0 to disable squid
+    # Port to of squid proxy, do not repeat, 0 to disable squid
     proxyport: 44425
-    #port of DNS server, do not repeat, 0 to disable dns
+    # Port of DNS server, do not repeat, 0 to disable dns
     dnsport: 44426
-    #NAT traffic to the vpn tunnel so you can route traffic through the container (true/false)
+    # NAT traffic to the vpn tunnel so you can route traffic through the container (true/false)
     nat: true
-    onboot: #commands to execute in the cointainer on boot
+    onboot: # Commands to execute in the cointainer on boot
       command1: echo "first command"
       command999: echo "Add as many commands as you need"
-    ondown: #commands to execute in the cointainer before shutdown
+    ondown: # Commands to execute in the cointainer before shutdown
       command1: echo "shutting down the container"
   example2:
     host: vpn.example2.com
