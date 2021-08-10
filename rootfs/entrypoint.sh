@@ -4,6 +4,7 @@ source /vpn/config/config.vpnid
 start(){
     #start programs in order
     supervisorctl start vpn
+    $nat && supervisorctl start nat
     (( $ssh )) && supervisorctl start sshd
     (( $proxy )) && supervisorctl start squid
     (( $dns  )) && supervisorctl start unbound

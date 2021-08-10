@@ -1,0 +1,24 @@
+---
+config:
+  subnet: 10.30.31.0/24 #subnet for the containers
+servers:
+  bbva:
+    host: arem.bbva.com.ar
+    #Number of passwords requested by the vpn, example: password and 2factorauth
+    pass: 1
+    user: A129072
+    #options to pass to openconnect (example: --authgroup=1)
+    options: ''
+    #port to forward the ssh traffic, do not repeat, 0 to disable ssh
+    sshport: 0
+    #port to of squid proxy, do not repeat, 0 to disable squid
+    proxyport: 0
+    #port of DNS server, do not repeat, 0 to disable dns
+    dnsport: 44426
+    #NAT traffic to the vpn tunnel so you can route traffic through the container (true/false)
+    nat: true
+    onboot: #commands to execute in the cointainer on boot
+      command1: echo "ip route 172.29.99.0/24 $(hostname -i)" > /shared/route-$(hostname -i)
+      command2: "echo \"forward-zone:\n\tname: '$(hostname)'\n\tforward-addr: $(hostname -i)\n\tforward-no-cache: yes\" > /shared/dns-$(hostname -i)"
+    ondown: #commands to execute in the cointainer before shutdown
+      command1: echo "$(hostname -i)" > /shared/down-$(hostname -i)

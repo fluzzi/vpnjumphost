@@ -2,14 +2,14 @@
 import sys
 import getpass
 import subprocess
-import json
+import yaml
 import os
 
 args = sys.argv
 workdir = None
 bindir = None
-js = open(workdir + '/config.json')
-config = json.loads(js.read())
+ymlconf = open(workdir + '/config.yaml')
+config = yaml.load(ymlconf.read(), Loader=yaml.FullLoader)
 servers = config["servers"]
 keys = list(servers.keys())
 ranges = list(range(1,len(servers.keys())+1))
@@ -63,7 +63,8 @@ newfile = newfile + "options='" + servers[selectedvpn]["options"] + "'\n"
 newfile = newfile + "user='" + servers[selectedvpn]["user"] + "'\n"
 newfile = newfile + "ssh=" + str(servers[selectedvpn]["sshport"]) + "\n"
 newfile = newfile + "proxy=" + str(servers[selectedvpn]["proxyport"]) + "\n"
-newfile = newfile + "dns=" + str(servers[selectedvpn]["dnsport"])
+newfile = newfile + "dns=" + str(servers[selectedvpn]["dnsport"]) + "\n"
+newfile = newfile + "nat=" + str(servers[selectedvpn]["nat"]).lower()
 configfile = "{}/config/config.{}".format(workdir,selectedvpn)
 passfile = "{}/config/pass.{}.txt".format(workdir,selectedvpn)
 try:

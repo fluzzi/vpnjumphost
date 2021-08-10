@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import subprocess
-import json
+import yaml
 import fileinput
 import shutil
 from shutil import copyfile
@@ -19,8 +19,8 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 workdir = os.path.dirname(os.path.realpath(__file__))
-js = open('config.json')
-config = json.loads(js.read())
+ymlconf = open('config.yaml')
+config = yaml.load(ymlconf.read(), Loader=yaml.FullLoader)
 subnet = config["config"]["subnet"]
 servers = config["servers"]
 keys = list(servers.keys())
@@ -75,20 +75,26 @@ def make_files(vpnid):
                 newline = newline.replace("proxyport",str(servers[vpnid]["proxyport"]))
                 newline = newline.replace("dnsport",str(servers[vpnid]["dnsport"]))
                 print(newline.replace("sshport",str(servers[vpnid]["sshport"])), end='')
-    onbootkeys = servers[vpnid]["onboot"].keys()
-    ob = open("rootfs/onboot.sh",'w')
-    onbootlines = "#!/bin/sh"
-    for obscript in onbootkeys:
-        onbootlines = onbootlines + "\n" + servers[vpnid]["onboot"][obscript]
-    ob.writelines(onbootlines)
-    ob.close()
-    ondownkeys = servers[vpnid]["ondown"].keys()
-    od = open("rootfs/ondown.sh",'w')
-    ondownlines = "#!/bin/sh"
-    for odscript in ondownkeys:
-        ondownlines = ondownlines + "\n" + servers[vpnid]["ondown"][odscript]
-    od.writelines(ondownlines)
-    od.close()
+    try:
+        onbootkeys = servers[vpnid]["onboot"].keys()
+        ob = open("rootfs/onboot.sh",'w')
+        onbootlines = "#!/bin/sh"
+        for obscript in onbootkeys:
+            onbootlines = onbootlines + "\n" + servers[vpnid]["onboot"][obscript]
+        ob.writelines(onbootlines)
+        ob.close()
+    except:
+        print("No onboot commands")
+    try:
+        ondownkeys = servers[vpnid]["ondown"].keys()
+        od = open("rootfs/ondown.sh",'w')
+        ondownlines = "#!/bin/sh"
+        for odscript in ondownkeys:
+            ondownlines = ondownlines + "\n" + servers[vpnid]["ondown"][odscript]
+        od.writelines(ondownlines)
+        od.close()
+    except:
+        print("No ondown commands")
 
 
 def return_files(vpnid):
