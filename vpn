@@ -7,7 +7,7 @@ import os
 
 args = sys.argv
 workdir = None
-bindir = None
+confdir = None
 ymlconf = open(workdir + '/config.yaml')
 config = yaml.load(ymlconf.read(), Loader=yaml.FullLoader)
 servers = config["servers"]
@@ -45,7 +45,7 @@ except Exception as e:
 
 if len(args) > 1:
     if args[1] == "down":
-        compose = "docker-compose -f {}/compose/vpn.{}.yml -p vpn.{} down".format(bindir,selectedvpn,selectedvpn)
+        compose = "docker-compose -f {}/vpn.{}.yml -p vpn.{} down".format(confdir,selectedvpn,selectedvpn)
         start = subprocess.Popen(compose,shell=True)
         try:
             os.remove("config/config.{}".format(selectedvpn))
@@ -55,6 +55,12 @@ if len(args) > 1:
             os.remove("config/pass.{}.txt".format(selectedvpn))
         except:
             pass
+        try:
+                for command in servers[selectedvpn]["hostondown"].keys():
+                            run = subprocess.Popen(servers[selectedvpn]["hostondown"][command],shell=True)
+        except:
+                print("No onboot commands")
+
         exit()
 
 newfile = "#!/usr/bin/env bash \n"
@@ -83,5 +89,11 @@ except:
 p.write(passwd)
 p.close()
 
-compose = "docker-compose -f {}/compose/vpn.{}.yml -p vpn.{} up".format(bindir,selectedvpn,selectedvpn)
+compose = "docker-compose -f {}/vpn.{}.yml -p vpn.{} up".format(confdir,selectedvpn,selectedvpn)
 start = subprocess.Popen(compose,shell=True)
+
+try:
+    for command in servers[selectedvpn]["hostonboot"].keys():
+        run = subprocess.Popen(servers[selectedvpn]["hostonboot"][command],shell=True)
+except:
+    print("No onboot commands")

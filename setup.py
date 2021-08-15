@@ -34,11 +34,15 @@ bindir = None
 for i in paths:
     if pathpattern1.match(i) or pathpattern2.match(i):
         bindir = i
+        if not os.path.exists(bindir):
+            os.makedirs(bindir)
 if bindir == None:
     if os.geteuid()==0:
         bindir = "/usr/bin"
     else:
         bindir = home + "/bin"
+        if not os.path.exists(bindir):
+            os.makedirs(bindir)
         print(f"{bcolors.WARNING}Warning: add {bindir} to PATH env{bcolors.ENDC}")
 scriptfile = bindir + "/vpn"
 
@@ -48,22 +52,22 @@ if not os.path.exists(homekey):
 else:
     copyfile(homekey,"authorized_keys")
 
-if not os.path.exists(bindir + '/compose'):
-    os.makedirs(bindir + '/compose')
+if not os.path.exists(home + '/.config/vpnjumphost'):
+    os.makedirs(home + '/.config/vpnjumphost')
 if not os.path.exists('config'):
     os.makedirs('config')
 if not os.path.exists('log'):
     os.makedirs('log')
 
 def make_files(vpnid):
-    vpnname = bindir + "/compose/vpn." + vpnid + ".yml"
+    vpnname = home + "/.config/vpn." + vpnid + ".yml"
     copyfile("vpn",scriptfile)
     st = os.stat(scriptfile)
     os.chmod(scriptfile, st.st_mode | stat.S_IEXEC)
     with fileinput.FileInput(scriptfile, inplace = True) as script:
         for line in script:
             newline = line.replace("workdir = None", "workdir = '" + workdir + "'")
-            print(newline.replace("bindir = None", "bindir = '" + bindir + "'"), end='')
+            print(newline.replace("confdir = None", "confdir = '" + home + "/.config'"), end='')
     copyfile("vpn.yml", vpnname)
     workfiles = allfiles.copy()
     workfiles.append(vpnname)
@@ -76,21 +80,21 @@ def make_files(vpnid):
                 newline = newline.replace("dnsport",str(servers[vpnid]["dnsport"]))
                 print(newline.replace("sshport",str(servers[vpnid]["sshport"])), end='')
     try:
-        onbootkeys = servers[vpnid]["onboot"].keys()
+        onbootkeys = servers[vpnid]["guestonboot"].keys()
         ob = open("rootfs/onboot.sh",'w')
         onbootlines = "#!/bin/sh"
         for obscript in onbootkeys:
-            onbootlines = onbootlines + "\n" + servers[vpnid]["onboot"][obscript]
+            onbootlines = onbootlines + "\n" + servers[vpnid]["guestonboot"][obscript]
         ob.writelines(onbootlines)
         ob.close()
     except:
         print("No onboot commands")
     try:
-        ondownkeys = servers[vpnid]["ondown"].keys()
+        ondownkeys = servers[vpnid]["guestondown"].keys()
         od = open("rootfs/ondown.sh",'w')
         ondownlines = "#!/bin/sh"
         for odscript in ondownkeys:
-            ondownlines = ondownlines + "\n" + servers[vpnid]["ondown"][odscript]
+            ondownlines = ondownlines + "\n" + servers[vpnid]["guestondown"][odscript]
         od.writelines(ondownlines)
         od.close()
     except:

@@ -19,11 +19,16 @@ servers:
     dnsport: 44426
     # NAT traffic to the vpn tunnel so you can route traffic through the container (true/false)
     nat: true
-    onboot: # Commands to execute in the cointainer on boot
+    guestonboot: # Commands to execute in the cointainer on boot
       command1: echo "first command"
       command999: echo "Add as many commands as you need"
-    ondown: # Commands to execute in the cointainer before shutdown
+    guestondown: # Commands to execute in the cointainer before shutdown
       command1: echo "shutting down the container"
+    hostonboot: # Commands to execute in the host on boot
+      command1: echo "first command"
+      command999: echo "Add as many commands as you need"
+    hostondown: # Commands to execute in the host before shutdown
+      command1: echo "Command after sending shutdown to container"
   example2:
     host: vpn.example2.com
     pass: 2
@@ -33,5 +38,7 @@ servers:
     proxyport: 44525
     dnsport: 0
     nat: false
-    onboot:
-    ondown:
+    guestonboot:
+    guestondown:
+    hostonboot:
+    hostondown:
