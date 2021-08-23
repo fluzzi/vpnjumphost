@@ -1,4 +1,4 @@
-servers.json
+config.yaml
 config/
 log/
 compose/
