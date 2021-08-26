@@ -118,7 +118,10 @@ def return_files(vpnid):
 for i in keys:
    print("making files for " + i) 
    make_files(i) 
-   build = "sudo docker build -t gederico/vpn.{}:v1.0.0 .".format(i)
+   if os.geteuid()==0:
+       build = "docker build -t gederico/vpn.{}:v1.0.0 .".format(i)
+   else:
+       build = "sudo docker build -t gederico/vpn.{}:v1.0.0 .".format(i)
    start = subprocess.call(build,shell=True)
    print("restoring files") 
    return_files(i)
