@@ -4,6 +4,7 @@ import getpass
 import subprocess
 import yaml
 import os
+import time
 
 args = sys.argv
 workdir = None
@@ -92,8 +93,17 @@ p.close()
 compose = "docker-compose -f {}/vpn.{}.yml -p vpn.{} up".format(confdir,selectedvpn,selectedvpn)
 start = subprocess.Popen(compose,shell=True)
 
+check_status = "docker inspect -f='{{.State.Running}}' vpn.{}".format(selectedvpn)
+while True:
+    time.sleep(1)
+    status = subprocess.run([check_status], capture_output=True, text=True, shell=True).stdout
+    status = status.strip("\n")
+    if status:
+        break
+
 try:
     for command in servers[selectedvpn]["hostonboot"].keys():
         run = subprocess.Popen(servers[selectedvpn]["hostonboot"][command],shell=True)
+        print("Starting onboot commands")
 except:
     print("No onboot commands")
