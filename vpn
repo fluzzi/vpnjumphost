@@ -60,7 +60,7 @@ if len(args) > 1:
                 for command in servers[selectedvpn]["hostondown"].keys():
                             run = subprocess.Popen(servers[selectedvpn]["hostondown"][command],shell=True)
         except:
-                print("No onboot commands")
+                print("No ondown commands")
 
         exit()
 
