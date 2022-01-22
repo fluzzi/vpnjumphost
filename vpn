@@ -9,7 +9,7 @@ import time
 args = sys.argv
 workdir = None
 confdir = None
-ymlconf = open(workdir + '/config.yaml')
+ymlconf = open(confdir + '/config.yaml')
 config = yaml.load(ymlconf.read(), Loader=yaml.FullLoader)
 servers = config["servers"]
 keys = list(servers.keys())

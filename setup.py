@@ -18,14 +18,15 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+home = os.path.expanduser("~")
 workdir = os.path.dirname(os.path.realpath(__file__))
+confdir = home + '/.config/vpnjumphost'
 ymlconf = open('config.yaml')
 config = yaml.load(ymlconf.read(), Loader=yaml.FullLoader)
 subnet = config["config"]["subnet"]
 servers = config["servers"]
 keys = list(servers.keys())
 allfiles = ["conf/supervisord.conf","rootfs/vpn.sh","rootfs/entrypoint.sh"]
-home = os.path.expanduser("~")
 homekey = home + "/.ssh/id_rsa.pub"
 paths = os.environ['PATH'].split(os.pathsep)
 pathpattern1 = re.compile("^" + home  +"/bin$")
@@ -52,22 +53,23 @@ if not os.path.exists(homekey):
 else:
     copyfile(homekey,"authorized_keys")
 
-if not os.path.exists(home + '/.config/vpnjumphost'):
-    os.makedirs(home + '/.config/vpnjumphost')
+if not os.path.exists(confdir):
+    os.makedirs(confdir)
+copyfile('config.yaml',confdir + '/config.yaml')
 if not os.path.exists('config'):
     os.makedirs('config')
 if not os.path.exists('log'):
     os.makedirs('log')
 
 def make_files(vpnid):
-    vpnname = home + "/.config/vpn." + vpnid + ".yml"
+    vpnname = confdir + "/vpn." + vpnid + ".yml"
     copyfile("vpn",scriptfile)
     st = os.stat(scriptfile)
     os.chmod(scriptfile, st.st_mode | stat.S_IEXEC)
     with fileinput.FileInput(scriptfile, inplace = True) as script:
         for line in script:
             newline = line.replace("workdir = None", "workdir = '" + workdir + "'")
-            print(newline.replace("confdir = None", "confdir = '" + home + "/.config'"), end='')
+            print(newline.replace("confdir = None", "confdir = '" + confdir + "'"), end='')
     copyfile("vpn.yml", vpnname)
     workfiles = allfiles.copy()
     workfiles.append(vpnname)
