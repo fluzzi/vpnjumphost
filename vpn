@@ -93,13 +93,16 @@ p.close()
 compose = "docker-compose -f {}/vpn.{}.yml -p vpn{} up".format(confdir,selectedvpn,selectedvpn)
 start = subprocess.Popen(compose,shell=True)
 
-check_status = "docker inspect -f='{{.State.Running}}' vpn.{}".format(selectedvpn)
-while True:
+state_formateado = "{{.State.Running}}"
+check_status = "docker inspect -f='{}' vpn.{}".format(state_formateado,selectedvpn)
+
+status_loop = 'start'
+while (status_loop != 'stop'):
     time.sleep(1)
     status = subprocess.run([check_status], capture_output=True, text=True, shell=True).stdout
     status = status.strip("\n")
-    if status:
-        break
+    if (status == 'true'):
+        status_loop = 'stop'
 
 try:
     for command in servers[selectedvpn]["hostonboot"].keys():
