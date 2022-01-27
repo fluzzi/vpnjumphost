@@ -46,7 +46,7 @@ except Exception as e:
 
 if len(args) > 1:
     if args[1] == "down":
-        compose = "docker-compose -f {}/vpn.{}.yml -p vpn.{} down".format(confdir,selectedvpn,selectedvpn)
+        compose = "docker-compose -f {}/vpn.{}.yml -p vpn{} down".format(confdir,selectedvpn,selectedvpn)
         start = subprocess.Popen(compose,shell=True)
         try:
             os.remove("config/config.{}".format(selectedvpn))
@@ -90,7 +90,7 @@ except:
 p.write(passwd)
 p.close()
 
-compose = "docker-compose -f {}/vpn.{}.yml -p vpn.{} up".format(confdir,selectedvpn,selectedvpn)
+compose = "docker-compose -f {}/vpn.{}.yml -p vpn{} up".format(confdir,selectedvpn,selectedvpn)
 start = subprocess.Popen(compose,shell=True)
 
 check_status = "docker inspect -f='{{.State.Running}}' vpn.{}".format(selectedvpn)
