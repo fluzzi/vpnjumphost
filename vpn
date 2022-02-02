@@ -107,6 +107,6 @@ while (status_loop != 'stop'):
 try:
     for command in servers[selectedvpn]["hostonboot"].keys():
         run = subprocess.Popen(servers[selectedvpn]["hostonboot"][command],shell=True)
-        print("Starting onboot commands")
+    print("Starting onboot commands")
 except:
     print("No onboot commands")
