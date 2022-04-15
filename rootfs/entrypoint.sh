@@ -7,7 +7,7 @@ start(){
     $nat && supervisorctl start nat
     (( $ssh )) && supervisorctl start sshd
     (( $proxy )) && supervisorctl start squid
-    (( $dns  )) && supervisorctl start unbound
+    (( $dns  )) && supervisorctl start dnsmasq
     /onboot.sh
 }
 

@@ -11,7 +11,7 @@ RUN apk --update add --no-cache --upgrade \
   openssh \
   busybox-extras \
   nmap \
-  unbound \
+  dnsmasq \
   openresolv \
   squid 
   
@@ -23,6 +23,8 @@ RUN mkdir /var/run/sshd
 RUN mkdir /log
 RUN mkdir /shared
 RUN touch /log/supervisord.log
+RUN touch /etc/dnsmasq-conf.conf
+RUN touch /etc/dnsmasq-resolv.conf
 
 RUN echo "root:root" | chpasswd
 RUN sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config
@@ -32,7 +34,7 @@ COPY conf/supervisord.conf /etc/supervisord.conf
 COPY authorized_keys /root/.ssh/authorized_keys
 COPY conf/squid*.conf /etc/squid/
 COPY conf/resolvconf.conf /etc
-COPY conf/unbound.conf /etc/unbound/unbound.conf
+COPY conf/dnsmasq.conf /etc
 
 RUN chmod 600 /root/.ssh/authorized_keys
 
