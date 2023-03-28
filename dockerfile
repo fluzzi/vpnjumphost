@@ -2,22 +2,29 @@ FROM alpine:edge
 
 COPY rootfs /
 
+#RUN apk add -X https://nl.alpinelinux.org/alpine/edge/main -u alpine-keys --allow-untrusted
+RUN apk add -X https://nl.alpinelinux.org/alpine/edge/testing -u alpine-keys --allow-untrusted
+
+#RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
+RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 #Install software for vpn and proxy
 RUN apk --update add --no-cache --upgrade \
   curl \
   openvpn \
   py3-setuptools \
+  quagga \
   supervisor \
   openssh \
   busybox-extras \
   nmap \
   dnsmasq \
   openresolv \
-  squid 
-  
+  squid \
+  openconnect \
+  bash \
+  inotify-tools
 
 
-RUN apk --update --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/edge/testing/ add       bash       openconnect && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/sshd
 RUN mkdir /log
@@ -33,8 +40,11 @@ RUN sed -i s/AllowTcpForwarding.*/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config
 COPY conf/supervisord.conf /etc/supervisord.conf
 COPY authorized_keys /root/.ssh/authorized_keys
 COPY conf/squid*.conf /etc/squid/
+COPY conf/zebra.conf /etc/quagga/zebra.conf
+COPY conf/ospfd.conf /etc/quagga/ospfd.conf
 COPY conf/resolvconf.conf /etc
 COPY conf/dnsmasq.conf /etc
+COPY conf/openssl.conf /etc
 
 RUN chmod 600 /root/.ssh/authorized_keys
 

@@ -1,5 +1,6 @@
 #!/bin/ash
 # generate tunnel interface
+export OPENSSL_CONF=/etc/openssl.conf
 openvpn --mktun --dev tun1
 ifconfig tun1 up
 # start vpn

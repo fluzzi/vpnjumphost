@@ -9,4 +9,5 @@ run() {
 	exec "$DNSMASQ" -k
 }
 
+sleep 10s
 run

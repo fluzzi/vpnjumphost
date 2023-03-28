@@ -71,7 +71,8 @@ newfile = newfile + "user='" + servers[selectedvpn]["user"] + "'\n"
 newfile = newfile + "ssh=" + str(servers[selectedvpn]["sshport"]) + "\n"
 newfile = newfile + "proxy=" + str(servers[selectedvpn]["proxyport"]) + "\n"
 newfile = newfile + "dns=" + str(servers[selectedvpn]["dnsport"]) + "\n"
-newfile = newfile + "nat=" + str(servers[selectedvpn]["nat"]).lower()
+newfile = newfile + "nat=" + str(servers[selectedvpn]["nat"]).lower() + "\n"
+newfile = newfile + "ospf=" + str(servers[selectedvpn]["ospf"]).lower()
 configfile = "{}/config/config.{}".format(workdir,selectedvpn)
 passfile = "{}/config/pass.{}.txt".format(workdir,selectedvpn)
 try:

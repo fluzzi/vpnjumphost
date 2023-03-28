@@ -8,6 +8,9 @@ start(){
     (( $ssh )) && supervisorctl start sshd
     (( $proxy )) && supervisorctl start squid
     (( $dns  )) && supervisorctl start dnsmasq
+    #(( $dns  )) && supervisorctl start inotify
+    $ospf && supervisorctl start zebra
+    $ospf && supervisorctl start ospfd
     /onboot.sh
 }
 
